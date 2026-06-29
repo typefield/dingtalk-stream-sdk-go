@@ -29,9 +29,10 @@ import (
  */
 
 type StreamClient struct {
-	AppCredential *AppCredentialConfig
-	UserAgent     *UserAgentConfig
-	AutoReconnect bool
+	AppCredential  *AppCredentialConfig
+	UserAgent      *UserAgentConfig
+	UserConnection *UserConnectionConfig
+	AutoReconnect  bool
 
 	subscriptions map[string]map[string]handler.IFrameHandler
 
@@ -312,6 +313,10 @@ func (cli *StreamClient) CheckConfigValid() error {
 		return err
 	}
 
+	if err := cli.UserConnection.Valid(); err != nil {
+		return err
+	}
+
 	if cli.subscriptions == nil {
 		return errors.New("subscriptionsNil")
 	}
@@ -347,16 +352,24 @@ func (cli *StreamClient) GetConnectionEndpoint(ctx context.Context) (*payload.Co
 		Subscriptions: make([]*payload.SubscriptionModel, 0),
 		Extras:        cli.extras,
 	}
+	if cli.UserConnection != nil {
+		requestModel.ChannelType = cli.UserConnection.ChannelType
+		requestModel.OrgId = cli.UserConnection.OrgId
+		requestModel.Uid = cli.UserConnection.Uid
+		requestModel.Subscriptions = nil
+	}
 	if localIp, err := utils.GetFirstLanIP(); err == nil {
 		requestModel.LocalIP = localIp
 	}
 
-	for ttype, subs := range cli.subscriptions {
-		for ttopic := range subs {
-			requestModel.Subscriptions = append(requestModel.Subscriptions, &payload.SubscriptionModel{
-				Type:  ttype,
-				Topic: ttopic,
-			})
+	if cli.UserConnection == nil {
+		for ttype, subs := range cli.subscriptions {
+			for ttopic := range subs {
+				requestModel.Subscriptions = append(requestModel.Subscriptions, &payload.SubscriptionModel{
+					Type:  ttype,
+					Topic: ttopic,
+				})
+			}
 		}
 	}
 

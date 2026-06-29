@@ -48,6 +48,12 @@ func WithUserAgent(ua *UserAgentConfig) ClientOption {
 	}
 }
 
+func WithUserConnection(conf *UserConnectionConfig) ClientOption {
+	return func(c *StreamClient) {
+		c.UserConnection = conf
+	}
+}
+
 func WithExtras(extras map[string]string) ClientOption {
 	return func(c *StreamClient) {
 		c.extras = extras

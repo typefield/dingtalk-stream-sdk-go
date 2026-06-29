@@ -38,3 +38,13 @@ func TestWithUserAgent(t *testing.T) {
 	c := NewStreamClient(op)
 	assert.NotNil(t, c.UserAgent)
 }
+
+func TestWithUserConnection(t *testing.T) {
+	op := WithUserConnection(NewUserConnectionConfig("open_source", "123456", "987654"))
+
+	c := NewStreamClient(op)
+	assert.NotNil(t, c.UserConnection)
+	assert.Equal(t, "open_source", c.UserConnection.ChannelType)
+	assert.Equal(t, "123456", c.UserConnection.OrgId)
+	assert.Equal(t, "987654", c.UserConnection.Uid)
+}

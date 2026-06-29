@@ -39,6 +39,32 @@ type UserAgentConfig struct {
 	UserAgent string `json:"user_agent"`
 }
 
+type UserConnectionConfig struct {
+	ChannelType string `json:"channelType" yaml:"channelType"`
+	OrgId       string `json:"orgId" yaml:"orgId"`
+	Uid         string `json:"uid" yaml:"uid"`
+}
+
+func NewUserConnectionConfig(channelType, orgId, uid string) *UserConnectionConfig {
+	return &UserConnectionConfig{
+		ChannelType: channelType,
+		OrgId:       orgId,
+		Uid:         uid,
+	}
+}
+
+func (c *UserConnectionConfig) Valid() error {
+	if c == nil {
+		return nil
+	}
+
+	if c.ChannelType == "" || c.OrgId == "" || c.Uid == "" {
+		return errors.New("UserConnectionConfigEmpty")
+	}
+
+	return nil
+}
+
 func NewDingtalkGoSDKUserAgent() *UserAgentConfig {
 	return &UserAgentConfig{
 		UserAgent: "dingtalk-sdk-go/v0.9.1",

@@ -16,10 +16,13 @@ type SubscriptionModel struct {
 type ConnectionEndpointRequest struct {
 	ClientId      string               `json:"clientId"`     //自建应用appKey; 三方应用suiteKey
 	ClientSecret  string               `json:"clientSecret"` //自建应用appSecret; 三方应用suiteSecret
-	Subscriptions []*SubscriptionModel `json:"subscriptions"`
+	Subscriptions []*SubscriptionModel `json:"subscriptions,omitempty"`
 	UserAgent     string               `json:"ua"`
 	LocalIP       string               `json:"localIp"`
 	Extras        map[string]string    `json:"extras"`
+	ChannelType   string               `json:"channelType,omitempty"`
+	OrgId         string               `json:"orgId,omitempty"`
+	Uid           string               `json:"uid,omitempty"`
 }
 
 // 长连接接入点参数

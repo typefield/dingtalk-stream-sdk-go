@@ -32,3 +32,14 @@ func TestDingtalkGoSDKUserAgent_Valid(t *testing.T) {
 	conf = nil
 	assert.NotNil(t, conf.Valid())
 }
+
+func TestUserConnectionConfig_Valid(t *testing.T) {
+	conf := NewUserConnectionConfig("open_source", "123456", "987654")
+	assert.Nil(t, conf.Valid())
+
+	conf.ChannelType = ""
+	assert.NotNil(t, conf.Valid())
+
+	conf = nil
+	assert.Nil(t, conf.Valid())
+}
